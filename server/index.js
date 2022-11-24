@@ -18,50 +18,60 @@ app.listen(PORT, () => {
 
 //Get all
 app.get('/todo', (req, res) => {
-    res.status(200).json(formatList(toDoList))
+    res.status(200).json(Array.from(toDoList.values()))
 })
 
 //Get a specific by ID
 app.get('/todo/:id', (req, res) => {
     const { id } = req.params;
-    let item = toDoList.get(Number(id));
+    const item = toDoList.get(Number(id));
 
-    if (typeof item !== 'undefined') {
-        res.status(200).json(item);
+    if (!item) {
+        return res.status(400).json({ "message": "Provided ID doesn't exist." })
     }
-    else res.status(400).json({ "message": "Provided ID doesn't exist." })
+
+    res.status(200).json(item);
 })
 
 //Create
 app.post('/todo', (req, res) => {
 
-    if (req.body.author && req.body.task) {
-        let newId = getRandomInt(1000);
-        req.body['id'] = newId
-        toDoList.set(newId, req.body)
-        res.status(200).json(req.body)
+    if (!req.body.author && !req.body.task) {
+        return res.status(404).json({ "message": "Input must contain author and task." })
     }
-    else res.status(404).json({ "message": "Input must contain author and task." })
 
+
+    const id = getRandomInt(1000);
+    const item = {
+        id,
+        ...req.body
+    }
+
+    toDoList.set(id, item)
+    res.status(200).json(item)
 })
 
 //Update
 app.put('/todo/:id', (req, res) => {
     const { id } = req.params;
+    const { author, task } = req.body;
 
-
-    if (req.body.author && req.body.task && toDoList.has(Number(id))) {
-        toDoList.delete(Number(id));
-
-        req.body['id'] = Number(id);
-
-        toDoList.set(Number(id), req.body)
-        res.status(200).json(req.body)
+    if (!toDoList.has(Number(id))) {
+        return res.status(400).json({ "message": "Provided ID doesn't exist." })
     }
-    else if (!req.body.author || !req.body.task) {
-        res.status(404).json({ "message": "Input must contain author and task." })
+    if (!author || !task) {
+        return res.status(404).json({ "message": "Input must contain author and task." })
     }
-    else res.status(400).json({ "message": "Provided ID doesn't exist." })
+
+    const item = {
+        id: Number(id),
+        ...req.body
+    }
+
+    toDoList.set(Number(id), item)
+
+    res.status(200).json(item)
+
 
 })
 
@@ -69,10 +79,10 @@ app.put('/todo/:id', (req, res) => {
 app.delete('/todo/:id', (req, res) => {
     const { id } = req.params;
 
-    if (toDoList.has(Number(id))) {
-
-        toDoList.delete(Number(id));
-        res.status(200).json();
+    if (!toDoList.has(Number(id))) {
+        return res.status(400).json({ "message": "Provided ID doesn't exist." })
     }
-    else res.status(400).json({ "message": "Provided ID doesn't exist." })
+
+    toDoList.delete(Number(id));
+    res.status(200).json();
 })
