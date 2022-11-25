@@ -16,7 +16,7 @@ app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`)
 })
 
-//Get all
+//Get All
 app.get('/todo', (req, res) => {
     res.status(200).json(Array.from(toDoList.values()))
 })
