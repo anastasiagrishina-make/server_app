@@ -1,7 +1,7 @@
-const getRandomInt = require("./utils/random-int")
-const formatList = require("./utils/format-list")
+import { getRandomInt } from "./utils/random-int.js";
+import { formatList } from "./utils/format-list.js";
 
-const express = require('express');
+import express from 'express';
 const PORT = process.env.PORT || 3030;
 
 const app = express();
