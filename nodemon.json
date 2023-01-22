@@ -1,6 +1,7 @@
 {
   "env": {
     "PORT" : 3030,
-    "DB" : "mongodb"
+    "DB" : "map",
+    "MONGODB_CREDITS": "mongodb+srv://grialtt:Kayota2009@serverapptodolist.im69p3a.mongodb.net/?retryWrites=true&w=majority"
   }
 }
